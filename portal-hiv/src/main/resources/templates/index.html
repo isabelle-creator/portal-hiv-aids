@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal de informações sobre HIV/AIDS — prevenção, PEP, PrEP, tratamento e acolhimento. Informação científica e humanizada para todas as pessoas.">
+    <title>Portal HIV/AIDS — Informação, Prevenção e Acolhimento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: 'Inter', system-ui, sans-serif; color: #1a1a2e; background: #f8f9fc; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+        a { color: #3b5fc0; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        h1,h2,h3,h4 { font-family: 'Lora', Georgia, serif; line-height: 1.25; color: #0d1b2a; }
+        p { margin-bottom: .75rem; }
+        p:last-child { margin-bottom: 0; }
+        ul,ol { padding-left: 1.4rem; }
+        li { margin-bottom: .35rem; }
+        strong { font-weight: 600; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+        /* NAV */
+        .site-header { background: #fff; border-bottom: 1px solid #eef0f4; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 8px rgba(0,0,0,.06); }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { width: 38px; height: 38px; background: #1a4068; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .logo-icon svg { width: 20px; height: 20px; fill: white; }
+        .logo-name { font-family: 'Lora', serif; font-size: 1rem; font-weight: 700; color: #1a4068; display: block; line-height: 1.1; }
+        .logo-sub { font-size: .65rem; color: #8a94a6; font-weight: 400; display: block; }
+        .site-nav { display: flex; align-items: center; gap: 4px; }
+        .nav-link { font-size: .8rem; color: #4a5568; padding: 7px 12px; border-radius: 6px; font-weight: 500; transition: background .15s; }
+        .nav-link:hover { background: #f5f7fa; color: #1a4068; text-decoration: none; }
+        .nav-cta { background: #1a4068; color: #fff !important; font-weight: 600 !important; }
+        .nav-cta:hover { opacity: .9; background: #1a4068; }
+
+        /* ALERTA DISCRETO */
+        .alert-strip { background: #f0f4ff; border-bottom: 1px solid #d5e0ff; padding: 11px 0; }
+        .alert-inner { display: flex; align-items: center; gap: 14px; }
+        .alert-ico { width: 32px; height: 32px; background: #3b5fc0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .alert-ico svg { width: 16px; height: 16px; fill: white; }
+        .alert-text strong { font-size: .83rem; color: #1a2e6b; display: block; font-weight: 600; }
+        .alert-text span { font-size: .75rem; color: #4a5c9e; }
+        .alert-cta { margin-left: auto; font-size: .75rem; color: #3b5fc0; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+        .alert-cta:hover { text-decoration: underline; }
+
+        /* HERO */
+        .hero { background: #f8f9fc; border-bottom: 1px solid #eef0f4; padding: 52px 0 44px; }
+        .breadcrumb { font-size: .72rem; color: #9ca3af; margin-bottom: 18px; display: flex; align-items: center; gap: 6px; }
+        .hero-cat { display: inline-block; background: #e8edf8; color: #3b5fc0; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 4px; margin-bottom: 14px; }
+        .hero h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); color: #0d1b2a; margin-bottom: 12px; max-width: 640px; }
+        .hero-meta { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+        .hero-meta span { font-size: .75rem; color: #9ca3af; display: flex; align-items: center; gap: 5px; }
+        .hero p.lead { font-size: .96rem; color: #4a5568; max-width: 560px; line-height: 1.75; margin-bottom: 28px; }
+        .hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-primary { background: #1a4068; color: #fff; border: none; padding: 11px 22px; border-radius: 7px; font-size: .875rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity .2s; }
+        .btn-primary:hover { opacity: .88; }
+        .btn-ghost { background: #fff; color: #1a4068; border: 1px solid #c8d4e8; padding: 11px 22px; border-radius: 7px; font-size: .875rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .btn-ghost:hover { background: #f0f4ff; }
+
+        /* LAYOUT */
+        .section { padding: 56px 0; }
+        .section-alt { background: #f8f9fc; }
+        .sec-label { display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #3b5fc0; margin-bottom: 6px; }
+        .sec-title { font-size: clamp(1.3rem, 3vw, 1.7rem); color: #0d1b2a; margin-bottom: 6px; }
+        .sec-sub { font-size: .875rem; color: #6b7280; max-width: 560px; margin-bottom: 28px; line-height: 1.65; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+        .divider { height: 1px; background: #eef0f4; margin: 8px 0 40px; }
+
+        /* CARDS */
+        .acard { background: #fff; border: 1px solid #eef0f4; border-radius: 10px; padding: 22px; transition: box-shadow .2s; }
+        .acard:hover { box-shadow: 0 4px 20px rgba(0,0,0,.07); }
+        .acard-cat { font-size: .67rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #3b5fc0; background: #f0f4ff; padding: 3px 9px; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+        .acard h3 { font-size: 1rem; color: #0d1b2a; margin-bottom: 9px; line-height: 1.35; font-weight: 600; }
+        .acard p { font-size: .85rem; color: #4a5568; line-height: 1.65; }
+        .acard-ref { margin-top: 14px; padding-top: 11px; border-top: 1px solid #f3f4f6; font-size: .71rem; color: #9ca3af; font-style: italic; }
+
+        /* PEP / PREP */
+        .pep-card { background: #f8faff; border: 1px solid #d5e0ff; border-radius: 10px; padding: 24px; }
+        .prep-card { background: #f4fbf7; border: 1px solid #c3e8d8; border-radius: 10px; padding: 24px; }
+        .badge-pep { display: inline-flex; align-items: center; gap: 5px; background: #e8edf8; color: #3b5fc0; font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; letter-spacing: .04em; text-transform: uppercase; }
+        .badge-prep { display: inline-flex; align-items: center; gap: 5px; background: #d9f2e6; color: #0f6e56; font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; margin-bottom: 12px; letter-spacing: .04em; text-transform: uppercase; }
+        .pc h3 { font-size: 1.05rem; margin-bottom: 10px; font-weight: 700; }
+        .pc p { font-size: .875rem; color: #374151; line-height: 1.65; }
+        .ref-box { margin-top: 16px; background: rgba(255,255,255,.7); border-radius: 6px; padding: 10px 14px; font-size: .72rem; color: #6b7280; border: 1px solid rgba(0,0,0,.06); }
+
+        /* MITOS */
+        .mito-card { background: #fff; border: 1px solid #eef0f4; border-radius: 10px; overflow: hidden; }
+        .mito-head { background: #fdf5f5; border-bottom: 1px solid #f0e4e4; padding: 16px 18px; display: flex; gap: 10px; align-items: flex-start; }
+        .tag-mito { background: rgba(185,28,28,.12); color: #b91c1c; font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; flex-shrink: 0; margin-top: 2px; border: 1px solid rgba(185,28,28,.2); }
+        .mito-head p { font-size: .85rem; color: #7f1d1d; line-height: 1.5; margin: 0; font-weight: 500; }
+        .fato-body { padding: 16px 18px; display: flex; gap: 10px; align-items: flex-start; }
+        .tag-fato { background: rgba(6,95,70,.1); color: #065f46; font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; flex-shrink: 0; margin-top: 2px; border: 1px solid rgba(6,95,70,.2); }
+        .fato-body p { font-size: .85rem; color: #1f2937; line-height: 1.6; margin: 0; }
+        .fato-fonte { padding: 4px 18px 13px; font-size: .7rem; color: #9ca3af; font-style: italic; }
+
+        /* I=I */
+        .ii-banner { background: #0d1b2a; border-radius: 14px; padding: 48px 40px; text-align: center; position: relative; overflow: hidden; }
+        .ii-banner::before { content: 'I=I'; position: absolute; font-family: 'Lora', serif; font-size: 13rem; color: rgba(255,255,255,.03); top: -30px; right: -20px; line-height: 1; user-select: none; font-weight: 700; }
+        .ii-pill { display: inline-block; background: #0e8c74; color: #fff; font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 700; padding: 10px 28px; border-radius: 7px; margin-bottom: 16px; letter-spacing: .02em; }
+        .ii-banner h2 { color: #fff; font-size: 1.4rem; margin-bottom: 12px; }
+        .ii-banner p { color: rgba(255,255,255,.62); font-size: .875rem; max-width: 520px; margin: 0 auto 10px; line-height: 1.75; }
+        .ii-ref { font-size: .72rem; color: rgba(255,255,255,.28); }
+
+        /* TESTAGEM */
+        .test-card { background: #fff; border: 1px solid #eef0f4; border-radius: 10px; padding: 22px 18px; text-align: center; }
+        .test-ico { width: 46px; height: 46px; background: #f0f4ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+        .test-ico svg { width: 24px; height: 24px; fill: #3b5fc0; }
+        .test-card h4 { font-family: 'Lora', serif; font-size: .92rem; font-weight: 700; color: #0d1b2a; margin-bottom: 7px; }
+        .test-card p { font-size: .82rem; color: #6b7280; line-height: 1.55; }
+
+        /* DIREITOS */
+        .dir-list { background: #fff; border: 1px solid #eef0f4; border-radius: 10px; overflow: hidden; }
+        .dir-item { display: flex; gap: 16px; align-items: flex-start; padding: 18px 22px; border-bottom: 1px solid #f3f4f6; }
+        .dir-item:last-child { border-bottom: none; }
+        .dir-num { width: 32px; height: 32px; background: #f0f4ff; color: #3b5fc0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; flex-shrink: 0; }
+        .dir-content h4 { font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 600; color: #0d1b2a; margin-bottom: 4px; }
+        .dir-content p { font-size: .82rem; color: #6b7280; margin: 0; line-height: 1.55; }
+
+        /* ASSISTENTE */
+        .assistant-wrap { background: #f8f9fc; border: 1px solid #eef0f4; border-radius: 14px; padding: 28px; }
+        .assistant-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eef0f4; }
+        .assistant-avatar { width: 52px; height: 52px; background: #1a4068; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .assistant-avatar svg { width: 28px; height: 28px; fill: white; }
+        .assistant-name strong { font-family: 'Lora', serif; font-size: 1.05rem; color: #0d1b2a; display: block; font-weight: 700; }
+        .assistant-name span { font-size: .78rem; color: #6b7280; display: block; margin-bottom: 6px; }
+        .status-pill { display: inline-flex; align-items: center; gap: 5px; background: #d1fae5; color: #065f46; font-size: .7rem; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
+        .status-pill::before { content: ''; width: 6px; height: 6px; background: #10b981; border-radius: 50%; }
+        .chat-area { background: #fff; border: 1px solid #eef0f4; border-radius: 10px; overflow: hidden; }
+        .chat-disc { background: #fffbeb; border-bottom: 1px solid #fde68a; padding: 9px 16px; font-size: .73rem; color: #92400e; display: flex; gap: 7px; align-items: center; }
+        .chat-messages { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 200px; max-height: 380px; overflow-y: auto; scroll-behavior: smooth; }
+        .msg { display: flex; flex-direction: column; max-width: 88%; }
+        .msg.bot { align-self: flex-start; }
+        .msg.user { align-self: flex-end; }
+        .bubble { padding: 11px 15px; border-radius: 16px; font-size: .875rem; line-height: 1.65; }
+        .msg.bot .bubble { background: #f3f4f6; color: #1f2937; border-bottom-left-radius: 3px; }
+        .msg.user .bubble { background: #1a4068; color: #fff; border-bottom-right-radius: 3px; }
+        .msg-time { font-size: .67rem; color: #9ca3af; margin-top: 4px; padding: 0 4px; }
+        .msg.user .msg-time { text-align: right; }
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+        .qr-btn { background: #fff; border: 1px solid #c8d4e8; color: #3b5fc0; padding: 5px 13px; border-radius: 100px; font-size: .78rem; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; transition: all .18s; }
+        .qr-btn:hover { background: #3b5fc0; color: #fff; border-color: #3b5fc0; }
+        .typing-wrap { display: flex; gap: 5px; align-items: center; background: #f3f4f6; padding: 12px 16px; border-radius: 16px 16px 16px 3px; width: fit-content; }
+        .dot { width: 7px; height: 7px; background: #c5ccd8; border-radius: 50%; animation: bounce 1.4s infinite; }
+        .dot:nth-child(2) { animation-delay: .2s; }
+        .dot:nth-child(3) { animation-delay: .4s; }
+        @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-5px); background: #3b5fc0; } }
+        .chat-input-area { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid #eef0f4; align-items: center; }
+        .chat-input { flex: 1; border: 1px solid #e5e7eb; border-radius: 22px; padding: 10px 16px; font-size: .875rem; color: #1f2937; background: #f8f9fc; outline: none; font-family: 'Inter', sans-serif; transition: border-color .2s; }
+        .chat-input:focus { border-color: #3b5fc0; background: #fff; }
+        .chat-input::placeholder { color: #adb5bd; }
+        .send-btn { width: 38px; height: 38px; background: #1a4068; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: opacity .2s; }
+        .send-btn:hover { opacity: .85; }
+        .send-btn svg { width: 18px; height: 18px; fill: white; }
+
+        /* REFS */
+        .refs-bar { background: #f8f9fc; border-top: 1px solid #eef0f4; padding: 20px 0; }
+        .refs-title { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #9ca3af; margin-bottom: 10px; }
+        .refs-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 22px; }
+        .refs-list li { font-size: .71rem; color: #9ca3af; font-style: italic; }
+
+        /* FOOTER */
+        .site-footer { background: #0d1b2a; padding: 40px 0 24px; }
+        .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 28px; }
+        .footer-brand strong { font-family: 'Lora', serif; color: #fff; font-size: 1rem; display: block; margin-bottom: 10px; }
+        .footer-brand p { color: rgba(255,255,255,.45); font-size: .78rem; line-height: 1.65; }
+        .footer-col h4 { color: #fff; font-size: .8rem; font-weight: 500; margin-bottom: 12px; font-family: 'Inter', sans-serif; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col li { margin-bottom: 8px; }
+        .footer-col a { color: rgba(255,255,255,.4); font-size: .78rem; transition: color .2s; }
+        .footer-col a:hover { color: #fff; text-decoration: none; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding-top: 18px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .footer-bottom p { color: rgba(255,255,255,.3); font-size: .75rem; margin: 0; }
+        .footer-bottom strong { color: rgba(255,255,255,.65); }
+
+        /* CHAT FAB */
+        .chat-fab { position: fixed; bottom: 28px; right: 28px; z-index: 1000; }
+        .chat-trigger { width: 58px; height: 58px; background: #0e8c74; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(14,140,116,.4); transition: transform .2s; }
+        .chat-trigger:hover { transform: scale(1.08); }
+        .chat-trigger svg { width: 26px; height: 26px; fill: white; }
+
+        @media(max-width:768px) {
+            .site-nav { display: none; }
+            .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.403 4.068 1 7.5 1c1.95 0 3.778.824 5.143 2.302L12 3.695l-.643-.393C9.778 1.824 7.95 1 6 1 2.568 1 0 3.403 0 7.191c0 4.105 5.37 8.863 11 14.402L12 21.593zm.857-3.059L12 19.19l-.857-.657C5.92 14.088 2 10.257 2 7.191 2 4.514 3.854 3 6 3c1.406 0 2.87.613 4.143 1.727L12 6.298l1.857-1.571C15.13 3.613 16.594 3 18 3c2.146 0 4 1.514 4 4.191 0 3.066-3.92 6.897-9.143 11.343z"/></svg>
+                </div>
+                <div>
+                    <span class="logo-name">Portal HIV/AIDS</span>
+                    <span class="logo-sub">Informação · Prevenção · Acolhimento</span>
+                </div>
+            </a>
+            <nav class="site-nav">
+                <a href="#o-que-e" class="nav-link">O que é</a>
+                <a href="#pep" class="nav-link">PEP</a>
+                <a href="#prep" class="nav-link">PrEP</a>
+                <a href="#mitos" class="nav-link">Mitos</a>
+                <a href="#direitos" class="nav-link">Direitos</a>
+                <a href="#assistente" class="nav-link nav-cta">Fazer teste</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="alert-strip">
+    <div class="container">
+        <div class="alert-inner">
+            <div class="alert-ico">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            </div>
+            <div class="alert-text">
+                <strong>Teve possível exposição ao HIV nas últimas 72 horas?</strong>
+                <span>A PEP é um tratamento de emergência gratuito pelo SUS. Quanto antes iniciada, mais eficaz.</span>
+            </div>
+            <a href="#pep" class="alert-cta">Ver onde conseguir a PEP →</a>
+        </div>
+    </div>
+</div>
+
+<section class="hero">
+    <div class="container">
+        <div class="breadcrumb">Início › Condições de Saúde › HIV e AIDS</div>
+        <div class="hero-cat">Condições de Saúde</div>
+        <h1>HIV e AIDS: o que você precisa saber, sem rodeios</h1>
+        <div class="hero-meta">
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#9ca3af"><path d="M19 3h-1V1h-2v2H8V1H6v2H5C3.89 3 3.01 3.9 3.01 5L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                Atualizado em junho de 2025
+            </span>
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#9ca3af"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                Tempo de leitura: 6 minutos
+            </span>
+        </div>
+        <p class="lead">Um espaço para tirar dúvidas sem julgamento — sobre prevenção, PEP, PrEP, testagem e os recursos gratuitos do SUS disponíveis para você e quem você ama.</p>
+        <div class="hero-btns">
+            <button class="btn-primary" onclick="document.getElementById('o-que-e').scrollIntoView({behavior:'smooth'})">Ler o conteúdo</button>
+            <button class="btn-ghost" onclick="document.getElementById('assistente').scrollIntoView({behavior:'smooth'})">Falar com a assistente Ana</button>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="o-que-e">
+    <div class="container">
+        <span class="sec-label">Entenda a diferença</span>
+        <div class="sec-title">O que é HIV — e o que é AIDS?</div>
+        <p class="sec-sub">Dois termos que aparecem juntos, mas representam coisas diferentes. Saber essa diferença muda a forma como você entende a doença.</p>
+        <div class="grid-2">
+            <div th:each="conteudo : ${conteudosOQueE}" class="acard">
+                <span class="acard-cat" th:text="${conteudo.tipo}">Fundamentos</span>
+                <h3 th:text="${conteudo.titulo}">Título</h3>
+                <p th:text="${#strings.abbreviate(conteudo.corpo, 380)}">Texto</p>
+                <div class="acard-ref" th:if="${conteudo.fontePrincipal}">Fonte: <span th:text="${conteudo.fontePrincipal}"></span></div>
+            </div>
+            <div th:if="${conteudosOQueE == null or conteudosOQueE.isEmpty()}" class="acard">
+                <span class="acard-cat">Fundamentos</span>
+                <h3>HIV e AIDS: entendendo a diferença</h3>
+                <p>O HIV é o vírus que, quando não tratado, pode progredir para AIDS. Com o tratamento antirretroviral gratuito pelo SUS, a pessoa mantém carga viral indetectável e vive com plena qualidade de vida.</p>
+                <div class="acard-ref">Fonte: PCDT HIV — Ministério da Saúde, 2018</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt" id="transmissao">
+    <div class="container">
+        <span class="sec-label">Transmissão</span>
+        <div class="sec-title">Como o HIV se transmite — e como não</div>
+        <p class="sec-sub">Grande parte do estigma em torno do HIV vem de informação incorreta que circula há décadas.</p>
+        <div class="grid-2">
+            <div th:each="conteudo : ${conteudosTransmissao}" class="acard">
+                <span class="acard-cat" th:text="${conteudo.tipo}">Transmissão</span>
+                <h3 th:text="${conteudo.titulo}">Título</h3>
+                <p th:text="${#strings.abbreviate(conteudo.corpo, 380)}">Texto</p>
+                <div class="acard-ref" th:if="${conteudo.fontePrincipal}">Fonte: <span th:text="${conteudo.fontePrincipal}"></span></div>
+            </div>
+            <div th:if="${conteudosTransmissao == null or conteudosTransmissao.isEmpty()}" class="acard">
+                <span class="acard-cat">Transmissão</span>
+                <h3>Vias reais de transmissão</h3>
+                <p>O HIV transmite-se por sangue, leite materno, líquido seminal e fluido vaginal/retal. Não há transmissão por abraços, beijos, tosse, copo compartilhado ou picada de inseto.</p>
+                <div class="acard-ref">Fonte: CDC, 2023; PCDT HIV — MS, 2018</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="pep">
+    <div class="container">
+        <span class="sec-label">Prevenção</span>
+        <div class="sec-title">PEP e PrEP — dois recursos gratuitos no SUS</div>
+        <p class="sec-sub">Uma é para emergência, a outra para prevenção contínua. As duas são gratuitas e cientificamente comprovadas.</p>
+        <div class="grid-2" id="prep">
+            <div th:each="conteudo : ${conteudosPep}" class="pep-card pc">
+                <span class="badge-pep">⏱ PEP · Emergência</span>
+                <h3 th:text="${conteudo.titulo}">PEP</h3>
+                <p th:text="${#strings.abbreviate(conteudo.corpo, 500)}">Texto</p>
+                <div class="ref-box" th:if="${conteudo.fontePrincipal}"><strong>Ref:</strong> <span th:text="${conteudo.fontePrincipal}"></span></div>
+            </div>
+            <div th:if="${conteudosPep == null or conteudosPep.isEmpty()}" class="pep-card pc">
+                <span class="badge-pep">⏱ PEP · Emergência</span>
+                <h3>Profilaxia Pós-Exposição</h3>
+                <p>Tratamento de emergência com antirretrovirais que deve ser iniciado em até <strong>72 horas</strong> após possível exposição ao HIV. Dura 28 dias, é gratuito em UPAs, hospitais e CTAs.</p>
+                <div class="ref-box"><strong>Ref:</strong> PCDT PEP — Ministério da Saúde, 2021</div>
+            </div>
+            <div th:each="conteudo : ${conteudosPrep}" class="prep-card pc">
+                <span class="badge-prep">✓ PrEP · Prevenção diária</span>
+                <h3 th:text="${conteudo.titulo}">PrEP</h3>
+                <p th:text="${#strings.abbreviate(conteudo.corpo, 500)}">Texto</p>
+                <div class="ref-box" th:if="${conteudo.fontePrincipal}"><strong>Ref:</strong> <span th:text="${conteudo.fontePrincipal}"></span></div>
+            </div>
+            <div th:if="${conteudosPrep == null or conteudosPrep.isEmpty()}" class="prep-card pc">
+                <span class="badge-prep">✓ PrEP · Prevenção diária</span>
+                <h3>Profilaxia Pré-Exposição</h3>
+                <p>Comprimido diário que reduz em até <strong>99%</strong> o risco de contrair HIV via relação sexual. Gratuito nos SAEs do SUS — acesse prepxds.com.br para encontrar o serviço mais próximo.</p>
+                <div class="ref-box"><strong>Ref:</strong> PCDT PrEP — MS, 2022; Grant RM, NEJM, 2010</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt" id="mitos">
+    <div class="container">
+        <span class="sec-label">Mitos & Fatos</span>
+        <div class="sec-title">O que você ouviu por aí — e o que a ciência diz</div>
+        <p class="sec-sub">Desinformação gera medo. Medo afasta as pessoas do diagnóstico. Vamos mudar isso.</p>
+        <div class="grid-2">
+            <div th:each="mf : ${mitosFatos}" class="mito-card">
+                <div class="mito-head"><span class="tag-mito">MITO</span><p th:text="${mf.mito}">Mito</p></div>
+                <div class="fato-body"><span class="tag-fato">FATO</span><p th:text="${mf.fato}">Fato</p></div>
+                <p class="fato-fonte" th:if="${mf.referencia}" th:text="'Ref: ' + ${mf.referencia}"></p>
+            </div>
+            <div th:if="${mitosFatos == null or mitosFatos.isEmpty()}" class="mito-card">
+                <div class="mito-head"><span class="tag-mito">MITO</span><p>Quem tem HIV vai morrer cedo.</p></div>
+                <div class="fato-body"><span class="tag-fato">FATO</span><p>Com TARV, a expectativa de vida é equivalente à da população geral. Pessoas em tratamento estável chegam à terceira idade com saúde.</p></div>
+                <p class="fato-fonte">May MT et al. AIDS. 2014;28(8):1193-202.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="ii-banner">
+            <div class="ii-pill">Indetectável = Intransmissível</div>
+            <h2>Quem trata não transmite</h2>
+            <p>O estudo PARTNER 2, publicado no <em>Lancet</em> em 2019, acompanhou mais de 1.000 casais sorodiscordantes e não registrou nenhum caso de transmissão quando a carga viral estava indetectável.</p>
+            <p class="ii-ref">Rodger AJ et al. PARTNER Study Group. Lancet. 2019;393(10189):2428–2438.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt" id="testagem">
+    <div class="container">
+        <span class="sec-label">Testagem</span>
+        <div class="sec-title">Fazer o teste é um ato de cuidado</div>
+        <p class="sec-sub">Gratuito, sigiloso e disponível em milhares de pontos pelo Brasil.</p>
+        <div class="grid-3">
+            <div class="test-card">
+                <div class="test-ico"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+                <h4>CTA / SAE</h4>
+                <p>Centros de Testagem e Aconselhamento. Resultado em até 30 minutos. Gratuito e sigiloso.</p>
+            </div>
+            <div class="test-card">
+                <div class="test-ico"><svg viewBox="0 0 24 24"><path d="M6.5 10h-2v7h2v-7zm6 0h-2v7h2v-7zm8.5 9H2v2h19v-2zm-2.5-9h-2v7h2v-7zM11.5 1L2 6v2h19V6l-9.5-5z"/></svg></div>
+                <h4>Farmácia Popular</h4>
+                <p>Autoteste de HIV disponível no programa Farmácia Popular. Resultado em casa, com total privacidade.</p>
+            </div>
+            <div class="test-card">
+                <div class="test-ico"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div>
+                <h4>Disque Saúde 136</h4>
+                <p>Gratuito, 24 horas. Indica o ponto de testagem mais próximo sem precisar se identificar.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="direitos">
+    <div class="container">
+        <span class="sec-label">Seus direitos</span>
+        <div class="sec-title">A lei protege você</div>
+        <p class="sec-sub">Viver com HIV no Brasil implica direitos garantidos por lei — muitos desconhecidos pelas próprias pessoas.</p>
+        <div class="dir-list">
+            <div class="dir-item"><div class="dir-num">1</div><div class="dir-content"><h4>Sigilo total sobre o diagnóstico</h4><p>Dado de saúde sensível protegido pela LGPD. Divulgação sem consentimento pode configurar crime (Lei nº 13.709/2018).</p></div></div>
+            <div class="dir-item"><div class="dir-num">2</div><div class="dir-content"><h4>Proteção no trabalho</h4><p>Demissão motivada por HIV é ilegal. A Lei 9.029/1995 proíbe discriminação por condição de saúde nas relações de emprego.</p></div></div>
+            <div class="dir-item"><div class="dir-num">3</div><div class="dir-content"><h4>Tratamento gratuito e universal pelo SUS</h4><p>Acesso à TARV garantido pela Lei 9.313/1996. O Brasil é referência mundial nessa política desde 1996.</p></div></div>
+            <div class="dir-item"><div class="dir-num">4</div><div class="dir-content"><h4>Isenção de Imposto de Renda</h4><p>Pessoas com AIDS têm isenção do IRPF sobre proventos de aposentadoria (Lei 7.713/1988).</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt" id="assistente">
+    <div class="container">
+        <span class="sec-label">Assistente virtual</span>
+        <div class="sec-title">Tire dúvidas com a Ana</div>
+        <p class="sec-sub">A Ana é uma assistente virtual de IA especializada em HIV/AIDS, treinada com base nas diretrizes do Ministério da Saúde. Responde sem julgamentos, 24 horas por dia.</p>
+        <div class="assistant-wrap">
+            <div class="assistant-header">
+                <div class="assistant-avatar">
+                    <svg viewBox="0 0 24 24"><path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3zM7 17V7h10v10H7zm-2-6c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm14 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM9 11.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S11.33 13 10.5 13 9 12.33 9 11.5zm5 0c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5z"/></svg>
+                </div>
+                <div class="assistant-name">
+                    <strong>Ana — Assistente Virtual de Saúde</strong>
+                    <span>Especializada em HIV/AIDS · Baseada nas diretrizes do Ministério da Saúde</span>
+                    <span class="status-pill">Online agora</span>
+                </div>
+            </div>
+            <div class="chat-area">
+                <div class="chat-disc">⚠ Informação educativa. Não substitui consulta médica. Em emergências, procure uma UPA.</div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="msg bot">
+                        <div class="bubble">Olá! Sou a Ana, assistente virtual do Portal HIV/AIDS. Posso te ajudar com informações sobre prevenção, PEP, PrEP, testagem, tratamento e direitos — sem julgamentos e com base em ciência.</div>
+                        <div class="msg-time" id="welcomeTime"></div>
+                    </div>
+                    <div class="quick-replies" id="quickReplies">
+                        <button class="qr-btn" onclick="sendQuick('O que é PEP e onde consigo?')">O que é PEP?</button>
+                        <button class="qr-btn" onclick="sendQuick('Como funciona a PrEP?')">Como funciona a PrEP?</button>
+                        <button class="qr-btn" onclick="sendQuick('Onde fazer o teste de HIV?')">Onde fazer o teste?</button>
+                        <button class="qr-btn" onclick="sendQuick('HIV tem cura?')">HIV tem cura?</button>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua dúvida aqui..." onkeydown="if(event.key==='Enter')enviar()">
+                    <button class="send-btn" onclick="enviar()">
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="refs-bar">
+    <div class="container">
+        <p class="refs-title">Referências científicas e fontes oficiais</p>
+        <ul class="refs-list">
+            <li>Ministério da Saúde. PCDT HIV em Adultos. Brasília: MS, 2018.</li>
+            <li>Ministério da Saúde. PCDT PEP. Brasília: MS, 2021.</li>
+            <li>Ministério da Saúde. PCDT PrEP. Brasília: MS, 2022.</li>
+            <li>Rodger AJ et al. PARTNER Study. Lancet. 2019;393:2428–2438.</li>
+            <li>Grant RM et al. iPrEx. N Engl J Med. 2010;363:2587–99.</li>
+            <li>CDC. HIV Transmission, 2023. · Leis nº 9.313/96; 9.029/95; 7.713/88; LGPD 13.709/18.</li>
+        </ul>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <strong>Portal HIV/AIDS</strong>
+                <p>Portal informativo com base nas diretrizes do Ministério da Saúde do Brasil, OMS e OPAS. As informações têm caráter educativo e não substituem consulta médica.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Links úteis</h4>
+                <ul>
+                    <li><a href="https://www.gov.br/aids" target="_blank">DIAHV — Ministério da Saúde</a></li>
+                    <li><a href="https://prepxds.com.br" target="_blank">prepxds.com.br</a></li>
+                    <li><a href="tel:136">Disque Saúde: 136</a></li>
+                    <li><a href="tel:188">CVV (apoio): 188</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Seções</h4>
+                <ul>
+                    <li><a href="#o-que-e">O que é HIV/AIDS</a></li>
+                    <li><a href="#pep">PEP — Emergência</a></li>
+                    <li><a href="#prep">PrEP — Prevenção</a></li>
+                    <li><a href="#mitos">Mitos e Fatos</a></li>
+                    <li><a href="#direitos">Seus Direitos</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Projeto de Extensão Universitária · Conteúdo baseado em fontes científicas oficiais.</p>
+            <p>Disque Saúde: <strong>136</strong> · CVV: <strong>188</strong></p>
+        </div>
+    </div>
+</footer>
+
+<div class="chat-fab">
+    <button class="chat-trigger" onclick="document.getElementById('assistente').scrollIntoView({behavior:'smooth'})" title="Falar com a Ana">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </button>
+</div>
+
+<script>
+    document.getElementById('welcomeTime').textContent = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+    const respostas = {
+        'O que é PEP e onde consigo?': 'A PEP (Profilaxia Pós-Exposição) é um tratamento de emergência com antirretrovirais que deve ser iniciado em <strong>até 72 horas</strong> após possível exposição ao HIV — quanto antes, mais eficaz.\n\nDura 28 dias e é gratuita pelo SUS em:\n• UPAs e prontos-socorros\n• CTAs (Centros de Testagem e Aconselhamento)\n• Hospitais públicos de referência\n\nLigue para o <strong>136 (Disque Saúde)</strong> para encontrar o ponto mais próximo.',
+        'Como funciona a PrEP?': 'A PrEP (Profilaxia Pré-Exposição) é um comprimido diário tomado por pessoas HIV negativas com maior risco de contrair o vírus. Quando usada corretamente, reduz em <strong>até 99%</strong> o risco via relação sexual.\n\nÉ indicada para HSH, mulheres trans, profissionais do sexo e casais sorodiscordantes. Gratuita nos SAEs do SUS — acesse <strong>prepxds.com.br</strong> para encontrar o serviço mais próximo.',
+        'Onde fazer o teste de HIV?': 'Você pode fazer o teste gratuitamente em:\n\n• <strong>CTA/SAE</strong> — resultado em 30 minutos, sigiloso\n• <strong>Farmácias Populares</strong> — autoteste em casa\n• <strong>UBS</strong> — muitas oferecem o teste rápido\n\nLigue para o <strong>136</strong> (Disque Saúde, gratuito 24h) para encontrar o mais próximo de você.',
+        'HIV tem cura?': 'Ainda não existe cura para o HIV, mas o tratamento antirretroviral (TARV) controla completamente o vírus.\n\nCom a TARV, a carga viral fica <strong>indetectável</strong>, o sistema imunológico se recupera e a expectativa de vida é equivalente à da população geral. Pelo princípio <strong>I=I</strong>, a pessoa em tratamento não transmite o HIV sexualmente.\n\nO tratamento é <strong>gratuito pelo SUS</strong> (Lei 9.313/1996).'
+    };
+
+    function now(){ return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+
+    function addMsg(texto, tipo) {
+        const msgs = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = 'msg ' + tipo;
+        div.innerHTML = `<div class="bubble">${texto.replace(/\n/g,'<br>')}</div><div class="msg-time">${now()}</div>`;
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+        return div;
+    }
+
+    function showTyping() {
+        const msgs = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = 'msg bot';
+        div.innerHTML = '<div class="typing-wrap"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
+        return div;
+    }
+
+    function removeQR() { const q = document.getElementById('quickReplies'); if(q) q.remove(); }
+
+    function sendQuick(txt) {
+        removeQR();
+        addMsg(txt, 'user');
+        const typing = showTyping();
+        setTimeout(() => {
+            typing.remove();
+            addMsg(respostas[txt] || respFallback(), 'bot');
+        }, 1400);
+    }
+
+    function enviar() {
+        const input = document.getElementById('chatInput');
+        const txt = input.value.trim();
+        if (!txt) return;
+        removeQR();
+        addMsg(txt, 'user');
+        input.value = '';
+        const typing = showTyping();
+        fetch('/api/chat/mensagem', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({pergunta: txt})
+        }).then(r => r.json()).then(data => {
+            typing.remove();
+            addMsg(data.resposta || respFallback(), 'bot');
+        }).catch(() => {
+            typing.remove();
+            addMsg(respFallback(), 'bot');
+        });
+    }
+
+    function respFallback() {
+        return 'Para informações detalhadas e personalizadas, recomendo ligar para o <strong>Disque Saúde: 136</strong> (gratuito, 24h) ou procurar um CTA próximo.';
+    }
+</script>
+</body>
+</html>
