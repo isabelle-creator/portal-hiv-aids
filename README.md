@@ -14,6 +14,4 @@ Portal web informativo sobre HIV/AIDS com assistente virtual de IA (Ana), basead
 - API Anthropic Claude (IA do chatbot)
 - Hospedagem: Railway
 
-## Como rodar localmente
 
-**1. Execute o SQL no MySQL Workbench:**
