@@ -4,10 +4,6 @@
 -- Execute no MySQL Workbench como root ou usuário com privilégios
 -- ============================================================
 
-DROP DATABASE IF EXISTS portal_hiv;
-CREATE DATABASE portal_hiv CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE portal_hiv;
-
 -- ============================================================
 -- TABELA: categorias de conteúdo
 -- ============================================================
