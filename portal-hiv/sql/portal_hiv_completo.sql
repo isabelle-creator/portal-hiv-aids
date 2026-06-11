@@ -1,16 +1,9 @@
--- ============================================================
--- PORTAL HIV/AIDS - SCRIPT SQL COMPLETO
--- Banco: MySQL 8.x
--- Execute no MySQL Workbench como root ou usuário com privilégios
--- ============================================================
 
 DROP DATABASE IF EXISTS portal_hiv;
 CREATE DATABASE portal_hiv CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE portal_hiv;
 
--- ============================================================
--- TABELA: categorias de conteúdo
--- ============================================================
+
 CREATE TABLE categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -20,9 +13,7 @@ CREATE TABLE categorias (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TABELA: conteúdos informativos com referências científicas
--- ============================================================
+
 CREATE TABLE conteudos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     categoria_id INT NOT NULL,
@@ -39,9 +30,6 @@ CREATE TABLE conteudos (
     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
 );
 
--- ============================================================
--- TABELA: mitos e fatos (seção dedicada)
--- ============================================================
 CREATE TABLE mitos_fatos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     mito TEXT NOT NULL,
@@ -52,9 +40,7 @@ CREATE TABLE mitos_fatos (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TABELA: perguntas frequentes do chatbot (base de conhecimento)
--- ============================================================
+
 CREATE TABLE base_conhecimento (
     id INT AUTO_INCREMENT PRIMARY KEY,
     intencao VARCHAR(100) NOT NULL,
@@ -67,9 +53,7 @@ CREATE TABLE base_conhecimento (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TABELA: histórico anônimo do chat
--- ============================================================
+
 CREATE TABLE historico_chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     sessao_id VARCHAR(64) NOT NULL,
@@ -81,9 +65,7 @@ CREATE TABLE historico_chat (
     INDEX idx_criado (criado_em)
 );
 
--- ============================================================
--- TABELA: estatísticas de acesso (anonimizado)
--- ============================================================
+
 CREATE TABLE estatisticas_acesso (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     pagina VARCHAR(100),
@@ -92,9 +74,7 @@ CREATE TABLE estatisticas_acesso (
     UNIQUE KEY uk_pagina_data (pagina, data_referencia)
 );
 
--- ============================================================
--- DADOS: Categorias
--- ============================================================
+
 INSERT INTO categorias (nome, slug, descricao, icone) VALUES
 ('O que é HIV/AIDS', 'o-que-e', 'Informações básicas sobre o vírus e a doença', 'info-circle'),
 ('Transmissão e Prevenção', 'transmissao-prevencao', 'Como o HIV se transmite e como se prevenir', 'shield-check'),
@@ -104,9 +84,7 @@ INSERT INTO categorias (nome, slug, descricao, icone) VALUES
 ('Tratamento e Qualidade de Vida', 'tratamento', 'Tudo sobre o tratamento antirretroviral', 'heartbeat'),
 ('Acolhimento e Direitos', 'acolhimento', 'Suporte emocional e direitos das pessoas vivendo com HIV', 'hands-helping');
 
--- ============================================================
--- DADOS: Conteúdos informativos
--- ============================================================
+
 INSERT INTO conteudos (categoria_id, titulo, subtitulo, corpo, referencias, fonte_principal, ano_referencia, tipo, ordem_exibicao) VALUES
 
 (1, 'HIV e AIDS: entendendo a diferença', 'São condições diferentes, mas relacionadas',
@@ -247,9 +225,7 @@ Isenção de imposto de renda: Pessoas com AIDS têm direito à isenção do IRP
 'Lei nº 9.313, de 13 de novembro de 1996. | Lei nº 9.029, de 13 de abril de 1995. | Lei nº 7.713, de 22 de dezembro de 1988. | Lei nº 8.742, de 7 de dezembro de 1993 (LOAS). | Brasil. Lei Geral de Proteção de Dados Pessoais (LGPD), Lei nº 13.709/2018.',
 'Legislação Federal Brasileira', 2018, 'artigo', 1);
 
--- ============================================================
--- DADOS: Mitos e Fatos
--- ============================================================
+
 INSERT INTO mitos_fatos (mito, fato, referencia, ordem_exibicao) VALUES
 
 ('Quem tem HIV vai morrer cedo.',
@@ -282,9 +258,7 @@ INSERT INTO mitos_fatos (mito, fato, referencia, ordem_exibicao) VALUES
 'Ministério da Saúde. Boletim Epidemiológico HIV/AIDS. Brasília: MS, 2023.',
 6);
 
--- ============================================================
--- DADOS: Base de conhecimento do Chatbot
--- ============================================================
+
 INSERT INTO base_conhecimento (intencao, palavras_chave, pergunta_exemplo, resposta, fonte, prioridade) VALUES
 
 ('pep_urgencia', 'pep,profilaxia,emergência,emergencia,exposição,exposicao,72 horas,tive relação,acidente,agulha,violência sexual',
@@ -392,9 +366,7 @@ Se você foi discriminado ou demitido por causa do HIV, pode:
 O Ministério Público do Trabalho também recebe denúncias de discriminação por condição de saúde.',
 'Lei nº 9.029/1995; Lei nº 13.709/2018 (LGPD); CLT Art. 482', 7);
 
--- ============================================================
--- Verificação final
--- ============================================================
+
 SELECT 'Categorias inseridas:' AS info, COUNT(*) AS total FROM categorias
 UNION ALL
 SELECT 'Conteúdos inseridos:', COUNT(*) FROM conteudos
