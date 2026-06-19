@@ -16,11 +16,6 @@ baseado nas diretrizes oficiais do Ministério da Saúde do Brasil.
 - API Anthropic Claude (IA do chatbot)
 - Aplicação hospedada no **Railway**
 
-> **Atenção:** no plano gratuito do Railway, o serviço pode entrar em modo
-> de hibernação após período de inatividade. Caso o site não carregue,
-> basta aguardar alguns segundos para o container ser reativado.
-
-## Variáveis de ambiente necessárias (Railway)
 
 | Variável | Descrição |
 |---|---|
@@ -29,6 +24,3 @@ baseado nas diretrizes oficiais do Ministério da Saúde do Brasil.
 | `SPRING_DATASOURCE_PASSWORD` | Senha do banco |
 | `ANTHROPIC_API_KEY` | Chave da API Anthropic (opcional) |
 
-## Como rodar localmente
-
-**1. Execute o SQL no MySQL Workbench:**
